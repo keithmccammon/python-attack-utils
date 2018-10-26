@@ -1,0 +1,7 @@
+Binary file metadata
+DLL monitoring
+File monitoring
+Loaded DLLs
+Process command-line parameters
+Process monitoring
+Process use of network
