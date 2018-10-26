@@ -7,21 +7,6 @@ from stix2 import TAXIICollectionSource, Filter
 from taxii2client import Collection
 
 
-cb_response_data_sources = ['Binary file metadata',
-                            'DLL monitoring',
-                            'File monitoring',
-                            'Loaded DLLs',
-                            'Process command-line parameters',
-                            'Process monitoring',
-                            'Process use of network']
-
-endgame_data_sources = ['Process command-line parameters',
-                        'Process monitoring']
-
-crowdstrike_data_sources = ['Process command-line parameters',
-                            'Process monitoring']
-
-
 def data_source_match(data_sources, match_list):
   '''Given a list of data sources from an ATT&CK technique, return True if any
   data source appears in match_list.
