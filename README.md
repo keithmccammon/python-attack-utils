@@ -1,5 +1,13 @@
 # Python ATT&CK Utils
-  
+
+## Purpose
+
+I wrote this to solve my problems, not to solve all problems for everyone. If you want a much more full-featured Python client for ATT&CK, see https://github.com/Cyb3rWard0g/ATTACK-Python-Client. 
+
+At present, the focus is on analysis of data sources as they relate to techniques.
+
+Feedback welcome.
+
 ## Setup (using virtualenv)
 ```bash
 mkvirtualenv -p<PATH_TO_PYTHON3> python-attack-utils
