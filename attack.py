@@ -39,6 +39,8 @@ def main():
   # Tools related to Data Sources
   parser.add_argument("--dump-data-sources", action="store_true",
                       help="Dump data sources to data_sources.txt")
+  parser.add_argument("--dump-matching-techniques", action="store_true",
+                      help="Dump techniques that map to match-data-sources to matching-techniques.txt")
   parser.add_argument("--match-data-sources", type=str, action="store",
                       help="A file containing a list of data sources that to match against techniques.")
 
@@ -47,7 +49,7 @@ def main():
   match_data_sources = None
   if args.match_data_sources:
     match_data_sources = parse_data_source_list(args.match_data_sources)
- 
+
   args.matrix = args.matrix.lower()
   if args.matrix == 'pre':
     matrix = "062767bd-02d2-4b72-84ba-56caef0f8658"
@@ -79,6 +81,7 @@ def main():
   techniques_without_data_source = 0
   techniques_observable = 0
   data_sources = set()
+  matching_techniques = set()
 
   for technique in all_techniques:
     technique_count += 1
@@ -88,6 +91,9 @@ def main():
         if data_source_match(technique['x_mitre_data_sources'],
                             match_list=match_data_sources) == True:
           techniques_observable += 1
+
+          if args.dump_matching_techniques == True:
+            matching_techniques.add(technique['external_references'][0]['external_id'])
 
       if args.dump_data_sources == True:
         [data_sources.add(data_source) for data_source in technique['x_mitre_data_sources']]
@@ -107,6 +113,13 @@ def main():
       data_sources.sort()
       for data_source in data_sources:
         fh_data_sources.write('{0}\n'.format(data_source))
+
+  if args.dump_matching_techniques == True:
+    with open('matching_techniques.txt', 'w') as fh_matching_techniques:
+      matching_techniques = list(matching_techniques)
+      matching_techniques.sort()
+      for data_source in matching_techniques:
+        fh_matching_techniques.write('{0}\n'.format(data_source))
     
 
 if __name__ == '__main__':
