@@ -39,9 +39,9 @@ def main():
 
   # Tools related to Data Sources
   parser.add_argument("--dump-data-sources", action="store_true",
-                      help="Dump data sources to data_sources.txt")
-  parser.add_argument("--dump-techniques", action="store_true",
-                      help="Dump techniques and data sources to techniques.txt")
+                      help="Dump all unique data source to data_sources.txt")
+  parser.add_argument("--dump-metadata", action="store_true",
+                      help="Dump a CSV file technique-metadata.csv, containing unique technique-metadata pairings.")
   parser.add_argument("--dump-matching-techniques", action="store_true",
                       help="Dump techniques that map to match-data-sources to matching-techniques.txt")
   parser.add_argument("--match-data-sources", type=str, action="store",
@@ -103,7 +103,7 @@ def main():
       if args.dump_data_sources == True:
         [data_sources.add(data_source) for data_source in technique['x_mitre_data_sources']]
 
-      if args.dump_techniques == True:
+      if args.dump_metadata == True:
         [techniques_with_data_sources.append((technique_id,data_source)) for data_source in technique['x_mitre_data_sources']]
 
     else:
@@ -129,8 +129,8 @@ def main():
       for data_source in matching_techniques:
         fh_matching_techniques.write('{0}\n'.format(data_source))
     
-  if args.dump_techniques == True:
-    with open('techniques.txt', 'w') as fh_techniques:
+  if args.dump_metadata == True:
+    with open('technique-metadata.csv', 'w') as fh_techniques:
       csvwriter = csv.writer(fh_techniques, quoting=csv.QUOTE_ALL)
       csvwriter.writerow(['id', 'data_source'])
       for technique in techniques_with_data_sources:
