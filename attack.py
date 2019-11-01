@@ -39,7 +39,7 @@ def main():
 
   # Tools related to Data Sources
   parser.add_argument("--dump-data-sources", action="store_true",
-                      help="Dump all unique data source to data_sources.txt")
+                      help="Dump a list of unique data sources to data_sources.txt")
   parser.add_argument("--dump-metadata", action="store_true",
                       help="Dump a CSV file technique-metadata.csv, containing unique technique-metadata pairings.")
   parser.add_argument("--dump-matching-techniques", action="store_true",
