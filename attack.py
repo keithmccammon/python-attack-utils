@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import argparse
+import csv
 import sys
 
 from stix2 import TAXIICollectionSource, Filter
@@ -38,7 +39,9 @@ def main():
 
   # Tools related to Data Sources
   parser.add_argument("--dump-data-sources", action="store_true",
-                      help="Dump data sources to data_sources.txt")
+                      help="Dump all unique data source to data_sources.txt")
+  parser.add_argument("--dump-metadata", action="store_true",
+                      help="Dump a CSV file technique-metadata.csv, containing unique technique-metadata pairings.")
   parser.add_argument("--dump-matching-techniques", action="store_true",
                       help="Dump techniques that map to match-data-sources to matching-techniques.txt")
   parser.add_argument("--match-data-sources", type=str, action="store",
@@ -80,11 +83,13 @@ def main():
   technique_count = 0
   techniques_without_data_source = 0
   techniques_observable = 0
+  techniques_with_data_sources = []
   data_sources = set()
   matching_techniques = set()
 
   for technique in all_techniques:
     technique_count += 1
+    technique_id = technique['external_references'][0]['external_id']
   
     if 'x_mitre_data_sources' in technique.keys():
       if match_data_sources is not None:
@@ -93,10 +98,13 @@ def main():
           techniques_observable += 1
 
           if args.dump_matching_techniques == True:
-            matching_techniques.add(technique['external_references'][0]['external_id'])
+            matching_techniques.add(technique_id)
 
       if args.dump_data_sources == True:
         [data_sources.add(data_source) for data_source in technique['x_mitre_data_sources']]
+
+      if args.dump_metadata == True:
+        [techniques_with_data_sources.append((technique_id,data_source)) for data_source in technique['x_mitre_data_sources']]
 
     else:
       techniques_without_data_source += 1
@@ -121,6 +129,12 @@ def main():
       for data_source in matching_techniques:
         fh_matching_techniques.write('{0}\n'.format(data_source))
     
+  if args.dump_metadata == True:
+    with open('technique-metadata.csv', 'w') as fh_techniques:
+      csvwriter = csv.writer(fh_techniques, quoting=csv.QUOTE_ALL)
+      csvwriter.writerow(['id', 'data_source'])
+      for technique in techniques_with_data_sources:
+        csvwriter.writerow(technique)
 
 if __name__ == '__main__':
 

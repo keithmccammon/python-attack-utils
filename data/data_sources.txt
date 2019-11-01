@@ -1,20 +1,23 @@
 API monitoring
-Access Tokens
+AWS CloudTrail logs
+AWS OS logs
+Access tokens
 Anti-virus
-Application Logs
 Application logs
-Asset Management
+Asset management
 Authentication logs
+Azure OS logs
+Azure activity logs
 BIOS
 Binary file metadata
 Browser extensions
-Component Firmware
+Component firmware
 DLL monitoring
 DNS records
 Data loss prevention
 Detonation chamber
-Digital Certificate Logs
-Disk Forensics
+Digital certificate logs
+Disk forensics
 EFI
 Email gateway
 Environment variable
@@ -30,15 +33,19 @@ Netflow/Enclave netflow
 Network device logs
 Network intrusion detection system
 Network protocol analysis
+OAuth audit logs
+Office 365 account logs
+Office 365 audit logs
+Office 365 trace logs
 Packet capture
 PowerShell logs
-Process Monitoring
 Process command-line parameters
 Process monitoring
 Process use of network
 SSL/TLS inspection
 Sensor health and status
 Services
+Stackdriver logs
 System calls
 Third-party application logs
 User interface
