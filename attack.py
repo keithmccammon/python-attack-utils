@@ -8,6 +8,18 @@ from stix2 import TAXIICollectionSource, Filter
 from taxii2client.v20 import Collection
 
 
+def remove_revoked_deprecated(stix_objects):
+  """Remove any revoked or deprecated objects from queries made to the data source"""
+  # Note we use .get() because the property may not be present in the JSON data. The default is False
+  # if the property is not set.
+  return list(
+    filter(
+      lambda x: x.get("x_mitre_deprecated", False) is False and x.get("revoked", False) is False,
+      stix_objects
+    )
+  )
+
+
 def data_source_match(data_sources, match_list):
   '''Given a list of data sources from an ATT&CK technique, return True if any
   data source appears in match_list.
@@ -83,6 +95,7 @@ def main():
     attack[key] = tc_source.query(filter_objs[key])
 
   all_techniques = attack["techniques"]
+  all_techniques = remove_revoked_deprecated(all_techniques)
 
   technique_count = 0
   techniques_without_data_source = 0
