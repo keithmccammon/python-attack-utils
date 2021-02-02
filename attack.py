@@ -39,7 +39,9 @@ def main():
 
   # Techniques
   parser.add_argument("--dump-all-techniques", action="store_true",
-                      help="Dump a CSV file with technique,subtechnique,name")
+                      help="Dump a CSV file with limited metadata for all techniques.")
+  parser.add_argument("--techniques-missing-desc", action="store_true",
+                      help="Dump a CSV file of techniques missing the description attribute.")
 
   # Data Sources
   parser.add_argument("--dump-data-sources", action="store_true",
@@ -160,6 +162,18 @@ def main():
                             technique.external_references[0].url,
                             description])
 
+  if args.techniques_missing_desc == True:
+    with open('techniques_missing_desc.csv', 'w') as fh_techniques_missing_desc:
+      csvwriter = csv.writer(fh_techniques_missing_desc, quoting=csv.QUOTE_ALL)
+      csvwriter.writerow(['technique_id', 'technique_name', 'technique_url'])
+      for technique in all_techniques:
+        try:
+          description = technique.description
+        except AttributeError:
+          print(technique)
+          csvwriter.writerow([technique.external_references[0].external_id, 
+                              technique.name,
+                              technique.external_references[0].url])
 
 if __name__ == '__main__':
 
