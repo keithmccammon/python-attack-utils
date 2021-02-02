@@ -5,7 +5,7 @@ import csv
 import sys
 
 from stix2 import TAXIICollectionSource, Filter
-from taxii2client import Collection
+from taxii2client.v20 import Collection
 
 
 def data_source_match(data_sources, match_list):
@@ -37,7 +37,11 @@ def main():
                       default="enterprise",
                       help="Matrix to query (enterprise, mobile, pre)")
 
-  # Tools related to Data Sources
+  # Techniques
+  parser.add_argument("--dump-all-techniques", action="store_true",
+                      help="Dump a CSV file with technique,subtechnique,name")
+
+  # Data Sources
   parser.add_argument("--dump-data-sources", action="store_true",
                       help="Dump a list of unique data sources to data_sources.txt")
   parser.add_argument("--dump-metadata", action="store_true",
@@ -90,7 +94,7 @@ def main():
   for technique in all_techniques:
     technique_count += 1
     technique_id = technique['external_references'][0]['external_id']
-  
+
     if 'x_mitre_data_sources' in technique.keys():
       if match_data_sources is not None:
         if data_source_match(technique['x_mitre_data_sources'],
@@ -108,6 +112,8 @@ def main():
 
     else:
       techniques_without_data_source += 1
+
+  # Output files based on input arguments.
 
   if match_data_sources is not None:
     print('Techniques: {0}'.format(technique_count))
@@ -130,11 +136,30 @@ def main():
         fh_matching_techniques.write('{0}\n'.format(data_source))
     
   if args.dump_metadata == True:
-    with open('technique-metadata.csv', 'w') as fh_techniques:
+    with open('technique_metadata.csv', 'w') as fh_techniques:
       csvwriter = csv.writer(fh_techniques, quoting=csv.QUOTE_ALL)
       csvwriter.writerow(['id', 'data_source'])
       for technique in techniques_with_data_sources:
         csvwriter.writerow(technique)
+
+  if args.dump_all_techniques == True:
+    with open('all_techniques.csv', 'w') as fh_all_techniques:
+      csvwriter = csv.writer(fh_all_techniques, quoting=csv.QUOTE_ALL)
+      csvwriter.writerow(['technique_id', 'technique_name', 'technique_url',
+                          'technique_description'])
+      for technique in all_techniques:
+        # Handle techniques that do not have a description (these probably 
+        # should not exist and should be contributed). 
+        try:
+          description = technique.description
+        except AttributeError:
+          description = 'NONE'
+
+        csvwriter.writerow([technique.external_references[0].external_id, 
+                            technique.name,
+                            technique.external_references[0].url,
+                            description])
+
 
 if __name__ == '__main__':
 
